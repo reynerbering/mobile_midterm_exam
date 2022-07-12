@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
 import '../models/product.dart';
 import '../services/api_service.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({Key? key, required this.id}) : super(key: key);
+  final int id;
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +20,7 @@ class ProductDetailScreen extends StatelessWidget {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-
             final product = snapshot.data;
-
             if (product == null) {
               return const Center(
                 child: Text(
@@ -34,7 +32,6 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
               );
             }
-
             return SingleChildScrollView(
               child: Column(
                 children: [
