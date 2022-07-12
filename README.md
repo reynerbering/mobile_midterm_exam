@@ -1,4 +1,4 @@
-# mobile_midterm_exam
+# fake_store
 
 A new Flutter project.
 

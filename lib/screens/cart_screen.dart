@@ -3,7 +3,8 @@ import 'package:get_it/get_it.dart';
 
 import '../models/cart.dart';
 import '../models/product.dart';
-	@@ -7,6 +8,8 @@ import '../services/api_service.dart';
+import '../services/api_service.dart';
+
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
 
@@ -23,11 +24,13 @@ class CartScreen extends StatelessWidget {
           if (!cartSnapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
+
           if (cartSnapshot.data == null) {
             return const Center(
               child: Text('No data available'),
             );
           }
+
           final products = cartSnapshot.data!.products;
           return ListView.separated(
             itemCount: products.length,
@@ -41,10 +44,12 @@ class CartScreen extends StatelessWidget {
                   if (!productSnapshot.hasData) {
                     return const LinearProgressIndicator();
                   }
+
                   final p = productSnapshot.data;
                   if (p == null) {
                     return const Text('No product found');
                   }
+
                   return ListTile(
                     title: Text(p.title),
                     leading: Image.network(

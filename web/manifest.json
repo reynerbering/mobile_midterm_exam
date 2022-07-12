@@ -1,6 +1,6 @@
 {
-    "name": "mobile_midterm_exam",
-    "short_name": "mobile_midterm_exam",
+    "name": "fake_store",
+    "short_name": "fake_store",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

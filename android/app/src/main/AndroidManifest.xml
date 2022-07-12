@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mobile_midterm_exam">
+    package="com.example.fake_store">
    <application
-        android:label="mobile_midterm_exam"
+        android:label="fake_store"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
