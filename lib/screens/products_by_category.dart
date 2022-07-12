@@ -1,56 +1,96 @@
-import 'package:flutter/material.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../models/cart.dart';
+import '../models/cart_update.dart';
 import '../models/product.dart';
-import '../services/api_service.dart';
-import 'product_detail.dart';
 
-class ProductsByCategoryScreen extends StatelessWidget {
-  final String categoryName;
+class ApiService {
+  static const String baseUrl = 'https://fakestoreapi.com';
+  Future<List<Product>> getAllProducts() async {
+    return http.get(Uri.parse('$baseUrl/products')).then((data) {
+      final products = <Product>[];
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        for (var product in jsonData) {
+          products.add(Product.fromJson(product));
+        }
+      }
+      return products;
+    }).catchError((err) => print(err));
+  }
 
-  const ProductsByCategoryScreen({Key? key, required this.categoryName})
-      : super(key: key);
+  Future<Product?> getProduct(int id) {
+    return http.get(Uri.parse('$baseUrl/products/$id')).then((data) {
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        return Product.fromJson(jsonData);
+      }
+      return null;
+    }).catchError((err) => print(err));
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(categoryName),
-        centerTitle: true,
-        backgroundColor: Colors.red,
-      ),
-      body: FutureBuilder(
-        future: getProductsByCategory(categoryName),
-        builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final products = snapshot.data!;
+  Future<List<Product>> getProductsByCategory(String categoryName) {
+    return http
+        .get(Uri.parse('$baseUrl/products/category/$categoryName'))
+        .then((data) {
+      final products = <Product>[];
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
 
-          return ListView.separated(
-            separatorBuilder: (_, __) => const Divider(thickness: 1),
-            itemCount: products.length,
-            itemBuilder: ((context, index) {
-              return ListTile(
-                title: Text('[title]'),
-                leading: Image.network(
-                  '[image]',
-                  height: 50,
-                  width: 50,
-                ),
-                subtitle: Text('\$price'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProductDetailScreen(id: productId),
-                    ),
-                  );
-                },
-              );
-            }),
-          );
-        },
-      ),
-    );
+        for (var product in jsonData) {
+          products.add(Product.fromJson(product));
+        }
+      }
+      return products;
+    }).catchError((err) => print(err));
+  }
+
+  Future<List<String>> getAllCategories() {
+    return http.get(Uri.parse('$baseUrl/products/categories')).then((data) {
+      final categories = <String>[];
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+
+        for (var category in jsonData) {
+          categories.add(category);
+        }
+      }
+      return categories;
+    }).catchError((err) => print(err));
+  }
+
+  Future<Cart?> getCart(String id) {
+    return http.get(Uri.parse('$baseUrl/carts/$id')).then((data) {
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        return Cart.fromJson(jsonData);
+      }
+      return null;
+    }).catchError((err) => print(err));
+  }
+
+  Future<void> updateCart(int cartId, int productId) {
+    final cartUpdate =
+        CartUpdate(userId: cartId, date: DateTime.now(), products: [
+      {'productId': productId, 'quantity': 1}
+    ]);
+    return http
+        .put(Uri.parse('$baseUrl/carts/$cartId'),
+            body: json.encode(cartUpdate.toJson()))
+        .then((data) {
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        print(jsonData);
+      }
+    }).catchError((err) => print(err));
+  }
+
+  Future<void> deleteCart(String cartId) {
+    return http.delete(Uri.parse('$baseUrl/carts/$cartId')).then((data) {
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        print(jsonData);
+      }
+    }).catchError((err) => print(err));
   }
 }
